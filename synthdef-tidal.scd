@@ -110,9 +110,8 @@ SynthDef(\hammondserrano, {
 	];
 
 	var sound = FM7.ar(ctls, mods) * amps;
-	// FM7 outputs 6 channels.  Splay.ar() maps them to stereo.
 	sound = Splay.ar(sound, spread: 0.5);
-	// sound = Mix.ar(sound);
+	sound = sound + GVerb.ar(sound, roomsize: 5, revtime: 1, damping: 0.8, mul: 0.5);
 	OffsetOut.ar(out, DirtPan.ar(sound, ~dirt.numChannels, pan, env));
 }).add;
 )
