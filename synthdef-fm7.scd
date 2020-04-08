@@ -4,13 +4,13 @@ SynthDef(\fm7, {
 	var gate = \gate.kr(1);
 	var freq = \freq.kr(440);
 	var amp = \amp.kr(1);
-	var spread = \spread.kr(0.8);
+	var spread = 0;// = \spread.kr(0.8);
 	var out = \out.kr(0);
-	var amps = Array.fill(6, { |i| (\amp++(i+1)).asSymbol.kr(1)});
+	var amps = Array.fill(6, { |i| (\amp++(i+1)).asSymbol.kr(0)});
 	var ctls, mods;
 
 	ctls = Array.fill(6, { |i|
-		[freq * (\freq++(i+1)).asSymbol.kr(i+1), 0, (\level++(i+1)).asSymbol.kr(1)];
+		[freq * (\ratio++(i+1)).asSymbol.kr(i+1), 0, (\level++(i+1)).asSymbol.kr(1)];
 	});
 
 	mods = Array.fill(6, { |i|
@@ -19,6 +19,8 @@ SynthDef(\fm7, {
 
 	sig = FM7.ar(ctls, mods) * amps;
 	sig = Gate.ar(sig, gate);
+	spread = amps.sum / amps.size;
+	sig = sig * (-10.dbamp);
 	Out.ar(out, Splay.ar(sig * amp, spread));
 }).store;
 )
@@ -31,30 +33,44 @@ SynthDef(\fmx7, {
 	var pan = \pan.kr(0);
 	var gate = \gate.kr(1);
 	var freq = \freq.kr(440);
-	var env = EnvGen.ar(Env.adsr(\attackTime.kr(0.01), \decayTime.kr(0.3), \sustainLevel.kr(0.5), \releaseTime.kr(1)), gate, doneAction:2);
+	var dur = \dur.kr(1);
+	var env = EnvGen.ar(Env.adsr(\attackTime.kr(0.01), \decayTime.kr(0.3), \sustainLevel.kr(0.5), \releaseTime.kr(1)), gate, timeScale: dur, doneAction:2);
+	var levels = Array.fill(6, { |i| (\level++(i+1)).asSymbol.kr(1)});
 	var amps = Array.fill(6, { |i| (\amp++(i+1)).asSymbol.kr(0)});
-	var freqs = Array.fill(6, { |i| (\freq++(i+1)).asSymbol.kr(i+1)});
+	var ratios = Array.fill(6, { |i| (\ratio++(i+1)).asSymbol.kr(1)});
+	var detunes = Array.fill(6, { |i| (\detunes++(i+1)).asSymbol.kr(0)});
+	// !!! TODO: add modwheel and LFO
+	// lfo sensitivity
+	var modsenses = Array.fill(6, { |i| (\modsens++(i+1)).asSymbol.kr(0)});
+	// selects between FM = 0 and AM = 1
+	var lfomode = \lfomode.kr(0);
+	var lfofreq = \lfofreq.kr(1);
+	var lfodepth = \lfodepth.kr(0.0);
+	var lfo = SinOsc.ar(lfofreq, 0, lfodepth);
 
 	var envs = Array.fill(6, { |i|
 		EnvGen.kr(
 			Env.new(
-				[0]++Array.fill(3, { |n| (\level++(i+1)++(n+1)).asSymbol.kr(1) })++[0],
+				[0]++Array.fill(3, { |n| (\eglevel++(i+1)++(n+1)).asSymbol.kr(1) * levels[i] })++[0],
 				// Array.fill(4, { |n| (\rate++(i+1)++(n+1)).asSymbol.kr(n/4) })
 				[
-					((\rate++(i+1)++1).asSymbol).kr(0.01),
-					((\rate++(i+1)++2).asSymbol).kr(0.3),
-					((\rate++(i+1)++3).asSymbol).kr(1),
-					((\rate++(i+1)++4).asSymbol).kr(1),
-				]
+					1 / ((\egrate++(i+1)++1).asSymbol).kr(1),
+					1 / ((\egrate++(i+1)++2).asSymbol).kr(1),
+					1 / ((\egrate++(i+1)++3).asSymbol).kr(1),
+					1 / ((\egrate++(i+1)++4).asSymbol).kr(1),
+				].normalizeSum
 			),
-			gate,
+			gate: gate,
+			timeScale: dur,
 			doneAction:2
 		);
 	});
 
-	var ctls = Array.fill(6, { |i|
-		[freq * freqs[i], 0, envs[i]];
-	});
+	var ctls = Array.fill(6, { |i|[
+		freq * ratios[i]/* * Select.kr(lfomode, [lfo, 1])*/ + detunes[i],
+		0,
+		envs[i]/* * Select.kr(lfomode, [1, lfo])*/,
+	]});
 
 	var mods = Array.fill(6, { |i|
 		Array.fill(6, { |n| (\mod++(i+1)++(n+1)).asSymbol.kr(0)});
@@ -70,29 +86,32 @@ SynthDef(\fmx7, {
 
 (
 SynthDef(\fmous, {
-	var amp = \amp.kr(0.2);
+	var amp = \amp.kr(1);
 	var out = \out.kr(0);
 	var pan = \pan.kr(0);
 	var gate = \gate.kr(1);
 	var freq = \freq.kr(440);
-	var amps = \amps.kr(#[1,0,0,0,0,0]);
-	// var amps = [1,0,0,0,0,0];
+	var dur = \dur.kr(1);
+	var envArray = [\attackTime.kr(0.01), \decayTime.kr(0.3), \sustainLevel.kr(0.5)].normalizeSum;
+	var env = EnvGen.ar(Env.adsr(envArray[0], envArray[1], envArray[2], \releaseTime.kr(1)), gate, doneAction:2);
+	var amps = \amps.kr(#[1,0,0,0,0,0]).min(1); // clip at 1
+	var levels = \levels.kr(#[1,1,1,1,1,]);
 	var ratios = \freqs.kr(#[1,1,1,1,1,1]);
-	// var freqs = [1,0.25,3,4,5,6];
-	var rates = Array.fill(6, {|i| (\rates++(i+1)).asSymbol.kr(#[0,1,1,0])});
-	var levels = Array.fill(6, {|i| (\levels++(i+1)).asSymbol.kr(#[1,1,1,0])});
+	var egrates = Array.fill(6, {|i| (\egrates++(i+1)).asSymbol.kr(#[1,1,1,1])});
+	var eglevels = Array.fill(6, {|i| (\eglevels++(i+1)).asSymbol.kr(#[1,1,1,0])});
 	var envs = Array.fill(6, { |i| EnvGen.kr(Env.new(
-		[0]++levels[i],
-		rates[i].normalizeSum
-	// ), gate, doneAction:2);});
-		), gate);});
+		([0]++eglevels[i]) * levels,
+		egrates[i].normalizeSum
+	), timeScale: dur, doneAction:2);});
+	// ), gate);});
 	var ctls = Array.fill(6, { |i|[freq * ratios[i], 0, envs[i]];});
 	var mods = Array.fill(6, { |i| (\mods++(i+1)).asSymbol.kr(#[0,0,0,0,0,0])});
 	var sig = FM7.ar(ctls, mods);
-	sig =sig * amps.normalizeSum;
-	// sig = sig * env;
+	sig = sig * amps.normalizeSum;
+	sig = sig * env;
 	// sig = sig * envs[0];
 	sig = sig * amp;
+	sig = sig * (-10.dbamp);
 	Out.ar(out, Pan2.ar(Mix.ar(sig), pan));
 }).store;
 )

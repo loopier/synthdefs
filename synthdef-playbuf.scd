@@ -8,7 +8,7 @@ SynthDef(\playbufm, { |out=0, amp=0.5, pan=0, buf, rate=1, t_trig=1, start=0, at
 	sig = sig * EnvGen.kr(Env.linen(attack, sustain, release), t_trig, doneAction:doneAction);
 	sig = Mix.ar(sig) * amp;
 	// sig = Pan2.ar(sig, pan);
-	Out.ar(out, sig);
+	Out.ar(out, Pan2.ar(sig,pan));
 }).store;
 
 SynthDef(\playbuf, { |out=0, amp=0.5, pan=0, buf, rate=1, gate=1, start=0, attack=0.01, decayTime=0.3, sustainLevel=0.5, releaseTime=0.01|
@@ -21,7 +21,8 @@ SynthDef(\playbuf, { |out=0, amp=0.5, pan=0, buf, rate=1, gate=1, start=0, attac
 	sig = sig * Env.adsr(attack, decayTime, sustainLevel, releaseTime).kr(2, gate);
 	// sig = Mix.ar(sig) * amp;
 	sig = sig * amp;
-	sig = Pan2.ar(sig, pan);
+	// sig = Pan2.ar(sig, pan);
+	sig = Splay.ar(sig, 0.2, center:pan);
 	Out.ar(out, sig);
 }).store;
 
