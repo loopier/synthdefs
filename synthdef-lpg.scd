@@ -17,10 +17,14 @@ SynthDef(\lpg, {
 		doneAction:2);
 	var amp = \amp.kr(1);
 	var width = \width.kr(0.5);
-	var sound = Pulse.ar(freq: freq, width: width, mul: env);
+	var sound = Pulse.ar(freq: freq * env, width: width, mul: env);
+    // var sound = \in.ar;
 	sound = RLPF.ar(in: sound, freq: freq * env, rq: env + 0.01, mul: env);
 	sound = sound * amp;
 	// sound = sound * (-10.dbamp);
 	OffsetOut.ar(out, Pan2.ar(sound, pan));
 }).store;
 )
+
+// Pdef(\a, Pbind(\instrument, \lpg, \octave, Pwhite(3,7), \dur, 0.25, \degree, Pwhite(0,7), \release, 2, \lfofreq,10, \lfodepth, 0.05, \width, Pwhite(0.1,0.9))).play
+

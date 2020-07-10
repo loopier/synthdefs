@@ -66,8 +66,9 @@ SynthDef(\enoglide, {
 	var pan = \pan.kr(0);
 	var gate = \gate.kr(1);
 	var velocity = 1;
+	var sustain = \sustain.kr(1);
 	// var gate = Impulse.kr(1);
-	var env = EnvGen.kr(Env.new( [ 0, 0.5, 0.5, 0.5, 0.0], [0.01, 1, 1, 0.1] ), gate, doneAction:2);
+	var env = EnvGen.ar(Env.new( [ 0, 0.5, 0.5, 0.5, 0.0], [0.01, 1, 1, 0.1] ), gate, timeScale: sustain, doneAction:2);
 	// var env = EnvGen.kr(Env.adsr( \attackTime.kr(0.01), \decayTime.kr(0.3), \sustainLevel.kr(0.5), \releaseTime.kr(1)), gate, doneAction:2);
 	sig = FM7.arAlgo(3,
 		[
@@ -83,9 +84,12 @@ SynthDef(\enoglide, {
 
 	sig = sig + (sig * LFTri.kr(0.35 * 19, mul: 0.35));
 	// sig = sig * CombC.ar(sig, 0.2, 0.2 * 0.42, 1);
+    sig = Splay.ar(sig, 0.2);
 
 	Out.ar(out, Pan2.ar(sig  * env * amp, pan));
 }).add;
 )
 
-// Pbindef(\a, \instrument, \enotamboura, \scale, Scale.harmonicMinor, \degree, Pwhite(0,7), \amp, Pwhite(0.3, 0.5), \octave, Pseq((2..7),inf)).play
+Pbindef(\a, \instrument, \enotamboura, \dur, Prand([0.5,1,2,0.25],inf), \scale, Scale.harmonicMinor, \degree, Pwhite(0,7), \amp, Pwhite(0.3, 0.5), \octave, Pseq((2..7),inf)).play
+Pbindef(\a, \instrument, \enoviolin3, \scale, Scale.harmonicMinor, \degree, Pwhite(0,7), \amp, Pwhite(0.3, 0.5), \octave, Pseq((2..7),inf)).play
+Pbindef(\a, \instrument, \enoglide, \dur, 1, \scale, Scale.harmonicMinor, \degree, Pwhite(0,7), \amp, Pwhite(0.3, 0.5), \octave, Pseq((2..7),inf)).play
