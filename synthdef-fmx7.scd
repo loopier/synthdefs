@@ -76,23 +76,35 @@ SynthDef(\fmx7, {
 }).store;
 )
 
-// fmx7 Pbindef random
-/*(
-Pbindef(\a, \instrument, \fmx7).play;
-Pbindef(\a, \amp, 1);
-6.do { |i|
-6.do { |n|
-Pbindef(\a, (\mod++(i+1)++(n+1)).asSymbol, 1.0.rand);
-};
-4.do { |n|
-Pbindef(\a, (\egrate++(i+1)++(n+1)).asSymbol, rrand(0.0,0.25));
-Pbindef(\a, (\eglevel++(i+1)++(n+1)).asSymbol, 1.0.rand);
-};
-Pbindef(\a, (\amp++(i+1)).asSymbol, 1.0.rand);
-Pbindef(\a, (\freq++(i+1)).asSymbol, ([0.25,0.5]++(1..8)).wchoose((0.2!4)++(0.02!6)).postln);
-Pbindef(\a, \attack, rrand(0.01, 0.2));
-Pbindef(\a, \decay, rrand(0.01, 0.5));
-Pbindef(\a, \sustainLevel, rrand(0.3, 0.95));
-Pbindef(\a, \releaseTime, 1.0.rand);
-};
-)*/
+// (
+// fmx7 basic example
+// Pbindef(\a, \instrument, \fmx7,
+//     \dur, 4,
+//     \amp2, 1,
+//     \ratio2, 1.1,
+//     \mod13, 1,
+//     \egrate31, 10.1,
+//     \eglevel32, 0.1,
+// ).play;
+// )
+
+// (
+// fmx7 Pbindef random example
+// Pbindef(\a, \instrument, \fmx7).play;
+// Pbindef(\a, \amp, 1);
+// 6.do { |i|
+// 6.do { |n|
+// Pbindef(\a, (\mod++(i+1)++(n+1)).asSymbol, 1.0.rand);
+// };
+// 4.do { |n|
+// Pbindef(\a, (\egrate++(i+1)++(n+1)).asSymbol, rrand(0.0,0.25));
+// Pbindef(\a, (\eglevel++(i+1)++(n+1)).asSymbol, 1.0.rand);
+// };
+// Pbindef(\a, (\amp++(i+1)).asSymbol, 1.0.rand);
+// Pbindef(\a, (\freq++(i+1)).asSymbol, ([0.25,0.5]++(1..8)).wchoose((0.2!4)++(0.02!6)).postln);
+// Pbindef(\a, \attack, rrand(0.01, 0.2));
+// Pbindef(\a, \decay, rrand(0.01, 0.5));
+// Pbindef(\a, \sustainLevel, rrand(0.3, 0.95));
+// Pbindef(\a, \releaseTime, 1.0.rand);
+// };
+// )
