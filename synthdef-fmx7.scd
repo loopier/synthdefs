@@ -27,10 +27,10 @@ SynthDef(\fmx7, {
 	var freq = \freq.kr(440);
 	var dur = \dur.kr(1);
     var legato = \legato.kr(1);
-    var attack = \attackTime.kr(0.01);
-    var decay = \decayTime.kr(0.3);
-    var sustain = \sustainLevel.kr(0.5);
-    var release = \releaseTime.kr(0.01);
+    var attack = \atk.kr(0.01);
+    var decay = \dec.kr(0.3);
+    var sustain = \sus.kr(0.5);
+    var release = \rel.kr(0.01);
 	var env = EnvGen.ar(Env.adsr(attack, decay, sustain, release), gate, timeScale: dur, doneAction:2);
     // operator levels are independent of their amplitudes. They can be at full level but
     // muted by the \amp parameter.
