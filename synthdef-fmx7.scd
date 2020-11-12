@@ -56,17 +56,17 @@ SynthDef(\fmx7, {
                 (\atkl++n).asSymbol.kr(1.0),
                 (\decl++n).asSymbol.kr(1.0),
                 (\susl++n).asSymbol.kr(1.0),
-                (\rerl++n).asSymbol.kr(0.0),
+                (\rell++n).asSymbol.kr(0.0),
             ], [
                 (\atkt++n).asSymbol.kr(0.01),
                 (\dect++n).asSymbol.kr(0.3),
                 (\sust++n).asSymbol.kr(0.1),
-                (\rert++n).asSymbol.kr(1.0),
+                (\relt++n).asSymbol.kr(1.0),
             ],
             releaseNode: 3, 
             loopNode: 1, 
         ), 
-        gate:1, 
+        gate: gate, 
         // timeScale: dur,
     )
     });
