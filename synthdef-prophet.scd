@@ -16,21 +16,21 @@ SynthDef(\prophet,{|out= 0 freq = 440 amp = 1.0 gate=1 lforate = 10 lfowidth= 0.
 
 }).store
 )
-
-
-(
-Pdef(\a,
-	Pfxb(
-	Pbind(
-		\instrument,\prophet,
-			// \octave, 3,
-		\degree,Pseq([0,3,8,7,5,8,7,3],inf),
-		\dur,Pseq((0.5!8) ++ (0.25!8) ++ (2.0!8),inf),
-		\lfowidth,Pn(Pseries(0.0,0.025,7),inf),
-		\lforate,Pn(Pseries(2,1,11),inf),
-		\rq,Pn(Pseries(0.9,-0.1,5),inf),
-		// \attackTime, 0.3,
-	),
-		\chorus),
-).play
-)
+//
+//
+// (
+// Pdef(\a,
+// 	Pfxb(
+// 		Pbind(
+// 			\instrument,\prophet,
+// 			// \octave, 3,
+// 			\degree,Pseq([0,3,8,7,5,8,7,3],inf),
+// 			\dur,Pseq((0.5!8) ++ (0.25!8) ++ (2.0!8),inf),
+// 			\lfowidth,Pn(Pseries(0.0,0.025,7),inf),
+// 			\lforate,Pn(Pseries(2,1,11),inf),
+// 			\rq,Pn(Pseries(0.9,-0.1,5),inf),
+// 			// \attackTime, 0.3,
+// 		),
+// 	\chorus),
+// ).play
+// )

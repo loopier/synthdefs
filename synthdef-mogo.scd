@@ -25,25 +25,25 @@ SynthDef(\mogo , {
 	// sig = sig + GVerb.ar(sig, mul:0.3);
 	sig = sig * amp * (-12.dbamp);
     Out.ar(out, sig);
-}).add;
-)
-
-(
-Pdef(\m, Pbind(\instrument, \mogo,
-	\dur, 4,
-    \degree, 0,
-    \degree, Place([0, Array.rand(7,0,14)], inf),
-	\ratio, Place([1.01, Array.rand(4, 1,3)+0.01],inf) /  2,
-    \octave, Pseq(Array.rand(4,3,5),inf),
-	// \ffreq, Pseq((24..72),inf).midicps,
-	\ffreq, Pn(Pseries(500, 10, 10)),
-	\rq, Pn(Pseries(0, 0.01, 30)),
-	// \legato, Pwhite(0.1,1.2),
-    // \attackTime, 0.3,
-    // \releaseTime, 2,
-	// \amp, 0.21 * Ptuple([
-	// 	Pbjorklund(5,8),
-	// 	Pbjorklund(5,8),
-	// ]),
-)).play
-)
+}).store;
+);
+//
+// (
+// Pdef(\m, Pbind(\instrument, \mogo,
+// 	\dur, 4,
+// 	\degree, 0,
+// 	\degree, Place([0, Array.rand(7,0,14)], inf),
+// 	\ratio, Place([1.01, Array.rand(4, 1,3)+0.01],inf) /  2,
+// 	\octave, Pseq(Array.rand(4,3,5),inf),
+// 	// \ffreq, Pseq((24..72),inf).midicps,
+// 	\ffreq, Pn(Pseries(500, 10, 10)),
+// 	\rq, Pn(Pseries(0, 0.01, 30)),
+// 	// \legato, Pwhite(0.1,1.2),
+// 	// \attackTime, 0.3,
+// 	// \releaseTime, 2,
+// 	// \amp, 0.21 * Ptuple([
+// 	// 	Pbjorklund(5,8),
+// 	// 	Pbjorklund(5,8),
+// 	// ]),
+// )).play
+// )

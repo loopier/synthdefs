@@ -32,18 +32,18 @@ SynthDef(\bass,{|out= 0 freq = 440 amp = 0.1 gate=1 cutoff= 1000 rq=0.2 pan=0.0 
 }).store;
 )
 
-(
-Pdef(\a,
-	Pfxb(
-		Pbind(\instrument, \bass,
-			// \midinote,Pstutter(4,Pseq([36,43,39,31],inf)),
-			\octave, Pseq([3,4],inf),
-			\scale, Scale.minor,
-			\degree, Pstutter(2, Pseq([0,2,-2,-3],inf)),
-			\dur, 1,
-			\rq,Pstutter(4,Pn(Pseries(1.0,-0.1,8),inf)),
-			\cutoff,Pstutter(4,Pn(Pseries(8000,-1000,7),inf))
-		),
-	\chorus),
-).play;
-)
+// (
+// Pdef(\a,
+// 	Pfxb(
+// 		Pbind(\instrument, \bass,
+// 			// \midinote,Pstutter(4,Pseq([36,43,39,31],inf)),
+// 			\octave, Pseq([3,4],inf),
+// 			\scale, Scale.minor,
+// 			\degree, Pstutter(2, Pseq([0,2,-2,-3],inf)),
+// 			\dur, 1,
+// 			\rq,Pstutter(4,Pn(Pseries(1.0,-0.1,8),inf)),
+// 			\cutoff,Pstutter(4,Pn(Pseries(8000,-1000,7),inf))
+// 		),
+// 	\chorus),
+// ).play;
+// )

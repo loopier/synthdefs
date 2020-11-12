@@ -12,7 +12,7 @@
 		sound = CombL.ar(sound, 0.05, pitch.reciprocal*(1-(detune/100)), sustain)
 		+ CombL.ar(sound, 0.05, pitch.reciprocal*(1+(detune/100)), sustain);
 		OffsetOut.ar(out, Pan2.ar(sound * env, pan))
-	}).add
+	}).store
 );
 
 
@@ -32,7 +32,7 @@
 		var sound = Mix.arFill(15, {arg i; EnvGen.ar(Env.perc(0.01*tscale[i], 0.5*tscale[i], 0.2*ascale[i] ), timeScale:sustain*5)
 			* SinOsc.ar(freq * freqlist[i] * Line.kr(1, 1+accelerate, sustain))});
 		OffsetOut.ar(out, Pan2.ar(sound, pan))
-	}).add
+	}).store
 );
 
 
@@ -46,7 +46,7 @@
 		var sound = MdaPiano.ar(freq+0.01, vel:velocity*100, hard:0.8*velocity, decay:0.1*sustain,
 			tune:0.5, random:0.05, stretch:detune, muffle:0.8*muffle, stereo:stereo);
 		OffsetOut.ar(out, Pan2.ar(sound * env, pan))
-	}).add
+	}).store
 );
 
 // waveguide mesh, hexagonal drum-like membrane
@@ -57,7 +57,7 @@
 		var loss = 1.0 - (0.01 * rate / freq);
 		var sound = MembraneHexagon.ar(Decay.ar(Impulse.ar(0,0,1), 0.01), tension, loss);
 		OffsetOut.ar(out, Pan2.ar(sound * env, pan))
-	}).add
+	}).store
 );
 
 
@@ -74,22 +74,22 @@
 		clickdur = 0.02*sustain*decay;
 		sound = sound + (LPF.ar(WhiteNoise.ar(1), 1500*pitch1*Line.kr(1,1+accelerate,clickdur) ) * Line.ar(1, 0, clickdur));
 		OffsetOut.ar(out, Pan2.ar(sound * env, pan))
-	}).add
+	}).store
 );
 
 
 // A vaguely 808-ish kick drum
-// "n" controls the chirp frequency, "sustain" the overall timescale, "rate" the filter sweep speed,
+// "n" of "freq" controls the chirp frequency, "sustain" the overall timescale, "rate" the filter sweep speed,
 // and "voice" the sinewave feedback
 (
-	SynthDef(\super808, {|out, rate=1, sustain=1, pan, voice=0, n |
-		var env, sound, freq;
+	SynthDef(\super808, {|out, rate=1, sustain=1, pan, voice=0, n, freq, amp = (-12.dbamp) |
+		var env, sound;
 		n = ((n>0)*n) + ((n<1)*3);
-		freq = (n*10).midicps;
+	// freq = (n*10).midicps;
 		env = EnvGen.ar(Env.linen(0.01, 0, 1, 1, -3), timeScale:sustain, doneAction:2);
 		sound = LPF.ar(SinOscFB.ar(XLine.ar(freq.expexp(10, 2000, 1000, 8000), freq, 0.025/rate), voice), 9000);
-		OffsetOut.ar(out, Pan2.ar(sound * env, pan))
-	}).add
+		OffsetOut.ar(out, Pan2.ar(sound * env * amp, pan))
+	}).store
 );
 
 
@@ -105,7 +105,7 @@
 		freq = 2000*accel*(n/5 + 1).wrap(0.5,2);
 		sound = HPF.ar(LPF.ar(WhiteNoise.ar(1), 3*freq), freq);
 		OffsetOut.ar(out, Pan2.ar(sound * env, pan))
-	}).add
+	}).store
 );
 
 
@@ -121,7 +121,7 @@
 		sound = LPF.ar(Pulse.ar(100*accel*(n/5+1).wrap(0.5,2)), Line.ar(1030, 30, 0.2*sustain));
 		sound = sound + (BPF.ar(HPF.ar(WhiteNoise.ar(1), 500), 1500) * Line.ar(1, 0, 0.2*decay));
 		OffsetOut.ar(out, Pan2.ar(sound * env, pan))
-	}).add
+	}).store
 );
 
 
@@ -137,7 +137,7 @@
 		sound = BPF.ar(LPF.ar(WhiteNoise.ar(1), 7500*pitch1), 1500*pitch1);
 		sound = Mix.arFill(4, {arg i; sound * 0.5 * EnvGen.ar(Env.new([0,0,1,0],[spr*(i**(n.clip(0,5)+1)),0,0.04/rate]))});
 		OffsetOut.ar(out, Pan2.ar(sound * env, pan))
-	}).add
+	}).store
 );
 
 
@@ -149,7 +149,7 @@
 		sound = VarSaw.ar(freq * (1.0 + EnvGen.kr(Env.linen(0.25,0.5,0.25,3,0), timeScale:sustain, doneAction:2)),
 			0, width:Line.kr(0.05,1,sustain));
 		OffsetOut.ar(out, Pan2.ar(sound * env, pan))
-	}).add
+	}).store
 );
 
 
@@ -183,7 +183,7 @@
 			resonance*4);
 		sound = sound.tanh * 2;
 		OffsetOut.ar(out, Pan2.ar(sound * env, pan));
-	}).add
+	}).store
 );
 
 
@@ -203,7 +203,7 @@
 			resonance*4);
 		sound = sound.tanh*2;
 		OffsetOut.ar(out, Pan2.ar(sound * env, pan));
-	}).add
+	}).store
 );
 
 
@@ -224,7 +224,7 @@
 		sound = MoogFF.ar(sound, min(env2*lfof2*1.1, 22000), 3);
 		sound = sound.tanh*5;
 		OffsetOut.ar(out, Pan2.ar(sound * env, pan));
-	}).add
+	}).store
 );
 
 
@@ -243,7 +243,7 @@
 			pitch1 * 4 * basefreq + SinOsc.ar(basefreq/64*rate, 0, lfo*basefreq/2) + LFNoise2.ar(1,lfo*basefreq),
 			LFNoise2.ar(0,0.1,4*resonance));
 		OffsetOut.ar(out, Pan2.ar(0.5*sound * env, pan));
-	}).add
+	}).store
 );
 
 
@@ -265,7 +265,7 @@
 			vola:va, volb:vb, volc:vc)/2;
 		sound = tanh(sound)*2;
 		OffsetOut.ar(out, Pan2.ar(sound * env, pan));
-	}).add
+	}).store
 );
 
 
@@ -289,7 +289,7 @@
 		sound = HPF.ar(BMoog.ar(sound, ffreq, resonance, 3), 20);
 		sound = clip(sound, -1,1) * 0.3;
 		OffsetOut.ar(out, Pan2.ar(sound * env, pan));
-	}).add
+	}).store
 );
 
 
@@ -302,7 +302,7 @@ SynthDef(\superfork, {|out, sustain=1, pan, freq, accelerate=0|
 	env = EnvGen.ar(Env.linen(0.001, 0.998, 0.001), timeScale:sustain, doneAction:2);
 	sound = 0.2 * SinOsc.ar([1.0, 6.1, 16.7, 20.1] * freq) * XLine.ar([0.3, 1, 1.3, 2], [1e-4, 1e-7, 1e-6, 1e-7], sustain*[4,4,0.5,0.333]);
 	OffsetOut.ar(out, Pan2.ar(sound * env, pan));
-}).add
+}).store
 );
 
 
@@ -316,7 +316,7 @@ SynthDef(\superfork, {|out, sustain=1, pan, freq, accelerate=0|
 // "vibrato", "vrate", "perc", "percf" are all new params you'll need to define in Tidal if you want to change them
 (
 SynthDef(\superhammond, {|out, sustain=1, decay=0, pan, freq, vibrato=0.5, vrate=7,
-	voice=0, perc=0, percf=2 |
+	voice=0, perc=0, percf=2, amp=(-12.dbamp) |
 	var freqs, amps, sound, click, env, ampscale, attrel;
 	attrel = (sustain/2).clip(0,0.005);
 	env = EnvGen.ar(Env.linen(attrel, sustain-(2*attrel), attrel), doneAction:2);
@@ -342,8 +342,8 @@ SynthDef(\superhammond, {|out, sustain=1, decay=0, pan, freq, vibrato=0.5, vrate
 	sound = 0.5 * Mix.ar( SinOsc.ar(freqs*(2*click+1), (2pi ! 9).rand, amps/amps.sum) );
 	sound = perc * 0.5 * SinOsc.ar(freq*percf, 2pi.rand) * XLine.ar(1,1e-6,2*decay+1) + sound;
 	sound = sound + BAllPass.ar(sound, 1000*LFTri.kr(vrate,0,vibrato/2,1));
-	OffsetOut.ar(out, Pan2.ar(sound * env, pan));
-}).add
+	OffsetOut.ar(out, Pan2.ar(sound * env * amp, pan));
+}).store
 );
 
 
@@ -368,7 +368,7 @@ SynthDef(\supervibe, {|out, sustain=1, decay=0, pan, freq, accelerate=0, velocit
 	sound = XLine.ar(1e-6, 1, 1/freqs) * XLine.ar(1, 1e-6, decays*4*sustain) * sound * mod; // main attacks and decays
 	sound = (XLine.ar(0.3*(velocity+1e-6),1e-6,0.02) * SinOsc.ar(hifreqs)).sum + sound.sum; // hi frequency onset
 	OffsetOut.ar(out, Pan2.ar(sound * env, pan));
-}).add
+}).store
 );
 
 
@@ -393,7 +393,7 @@ SynthDef(\superhoover, {|out, sustain=1, decay=0, pan, freq, accelerate=0, slide
 	mix = BPeakEQ.ar(mix, 3500, 1, 6);
 	mix = mix.dup + CombC.ar(mix.dup, 1/200, SinOsc.kr(3, [0.5pi, 1.5pi]).range(1/300, 1/200), 0);
 	OffsetOut.ar(out, Pan2.ar(1.4*mix * env, pan));
-}).add
+}).store
 );
 
 
@@ -411,7 +411,7 @@ SynthDef(\superzow, {|out, sustain=1, pan, accelerate, freq, decay=0, slide=1, d
 	sound = sound - DelayN.ar(sound2,0.2, Line.ar(0,1,5*sustain/slide)/basefreq)
 	  + DelayN.ar(sound3,0.2, Line.ar(0,1,20*sustain/slide)/basefreq);
 	OffsetOut.ar(out, Pan2.ar(sound/2 * env, pan));
-}).add
+}).store
 );
 
 
@@ -422,7 +422,7 @@ SynthDef(\superstatic, {|out, sustain=1, pan, freq |
 	var sound = Dust.ar(freq*40) > 0.5;
 	sound = Pulse.ar(freq*sound*4,0.5,0.5);
 	OffsetOut.ar(out, Pan2.ar(sound * env, pan))
-}).add
+}).store
 );
 
 
@@ -445,7 +445,7 @@ SynthDef(\supergrind, {|out, pan, freq, sustain, accelerate, detune=0, voice=0, 
 	loop = loop + DelayC.ar(loop, 0.2, SinOsc.ar(1, 0, 1e-3, 0.1));
 	loop = GVerb.ar(sin(loop + (8*trig)*4)).sin + loop;
 	OffsetOut.ar(out, Pan2.ar(0.3*loop * env, pan));
-}).add;
+}).store;
 );
 
 // from synthdef.art
@@ -467,7 +467,7 @@ SynthDef(\superprimes, {|out, pan, freq, sustain, accelerate, rate=1, detune=0, 
 	sound = GVerb.ar(sound.softclip, 10*voice.linexp(0,5,1,0.01), 10).tanh;
 	sound = SplayAz.ar(primes.size, sound.flat, center:LFNoise2.kr(sustain).range(0,primes.size-1));
 	OffsetOut.ar(out, Pan2.ar(sound * env, pan));
-}).add;
+}).store;
 );
 
 // from synthdef.art
@@ -488,7 +488,7 @@ SynthDef(\superwavemechanics, {|out, pan, freq, sustain, accelerate, detune=0, v
 	sound = Resonz.ar(WhiteNoise.ar(0.5), freq * r * d, 0.01 + voice.linexp(0,1,1e-3,1));
 	sound = HPF.ar(Limiter.ar(55 * GVerb.ar(sound, resonance.linexp(0,1,99,0.1),10) ), 30).sanitize;
 	OffsetOut.ar(out, Pan2.ar(sound.flat * env, pan));
-}).add;
+}).store;
 );
 
 // feedback PWM
@@ -504,13 +504,13 @@ SynthDef(\supertron, {|out, pan, freq, sustain, voice, detune, accelerate|
 	sound = LeakDC.ar(sound);
 	LocalOut.ar(sound);
 	OffsetOut.ar(out, Pan2.ar(sound * aenv, pan))
-}).add;
+}).store;
 );
 
 // Vaguely Reese-like synth
 // can use "accelerate" "voice" and "detune" parameters
 (
-SynthDef(\superreese,  {|out, pan, freq, sustain, accelerate, detune=0, voice=0|
+SynthDef(\superreese,  {|out, pan, freq, sustain, accelerate, detune=0, voice=0, amp = (-12.dbamp)|
 	var sound;
 	var env = EnvGen.ar(Env.linen(0.05, 0.8, 0.15), timeScale:sustain, doneAction:2);
 	var q1 = voice.linlin(0,2, 3.0, 0.5);
@@ -520,6 +520,6 @@ SynthDef(\superreese,  {|out, pan, freq, sustain, accelerate, detune=0, voice=0|
 	sound = RLPF.ar(sound, freq*10, 1.0/q1);
 	sound = sound.clip2(1.0/5.0)* 5.0;
 	sound = 0.35*RLPF.ar(sound, freq*20, 1.0/q2);
-	OffsetOut.ar(out, Pan2.ar(sound * env, pan));
-}).add;
+	OffsetOut.ar(out, Pan2.ar(sound * env * amp, pan));
+}).store;
 );

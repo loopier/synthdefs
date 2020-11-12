@@ -9,15 +9,15 @@ SynthDef(\theremin, { arg mod = 7, detune = 0, freq = 440, amp = 1, out = 0, pan
 	Out.ar(out, Pan2.ar(z * env, pan))
 }).store
 )
-
-(
-Pdef(\a,
-	Pbind(
-		\instrument,\theremin,
-		\degree,Pseq([0,3,8,7,5,8,7,3],inf),
-		\dur, 2,
-		\mod,Pn(Pseries(0.0,0.5,9),inf),
-		\detune,Pn(Pseries(0,0.1,11),inf),
-	)
-).play
-)
+//
+// (
+// Pdef(\a,
+// 	Pbind(
+// 		\instrument,\theremin,
+// 		\degree,Pseq([0,3,8,7,5,8,7,3],inf),
+// 		\dur, 2,
+// 		\mod,Pn(Pseries(0.0,0.5,9),inf),
+// 		\detune,Pn(Pseries(0,0.1,11),inf),
+// 	)
+// ).play
+// )

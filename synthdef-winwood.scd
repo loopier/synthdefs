@@ -23,20 +23,20 @@ SynthDef(\winwood,{|out= 0 freq = 440 amp = 0.1 gate=1 cutoff=8000 rq=0.8 lfowid
 }).store;
 
 )
-
-(
-Pdef(\a,
-	Pmono(
-		\winwoodlead,
-		\midinote,Pseq([Pshuf([60,76,77,76,74,72],2)],inf),
-		\dur,Pseq([0.5,1.0,0.5,0.5,0.5,1.0],inf),
-		\amp,Pseq([0,1,1,1,1,1],inf),
-		\lagamount,0.3,
-		// \legato, 0.1,
-		\releaseTime, 0,
-		\lfowidth,Pstutter(6,Pseq([0.0,0.01,0.02,0.03,0.05,0.1],inf)),
-		// \cutoff,Pstutter(6,Pn(Pgeom(2000,1.5,5),inf)).trace,
-		// \cutoff, Pseq((60..120).midicps,inf),
-	)
-).play;
-)
+//
+// (
+// Pdef(\a,
+// 	Pmono(
+// 		\winwoodlead,
+// 		\midinote,Pseq([Pshuf([60,76,77,76,74,72],2)],inf),
+// 		\dur,Pseq([0.5,1.0,0.5,0.5,0.5,1.0],inf),
+// 		\amp,Pseq([0,1,1,1,1,1],inf),
+// 		\lagamount,0.3,
+// 		// \legato, 0.1,
+// 		\releaseTime, 0,
+// 		\lfowidth,Pstutter(6,Pseq([0.0,0.01,0.02,0.03,0.05,0.1],inf)),
+// 		// \cutoff,Pstutter(6,Pn(Pgeom(2000,1.5,5),inf)).trace,
+// 		// \cutoff, Pseq((60..120).midicps,inf),
+// 	)
+// ).play;
+// )

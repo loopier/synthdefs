@@ -22,7 +22,7 @@ SynthDef(\shine, {
 }).add
 );
 
-Synth(\shine)
+// Synth(\shine)
 
 // (
 // var synthname = \shine;

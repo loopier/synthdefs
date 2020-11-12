@@ -15,7 +15,7 @@ SynthDef(\delay, {
 	var gate = \gate.kr(1);
     var env, in, local, del;
     env = Linen.kr(gate, 0.05, 1, 0.1, 2);
-    in = In.ar(out, 2);
+    in = In.ar(\in.kr(0), 2);
 	local = LocalIn.ar(2) + in;
 	del = DelayN.ar(
 		local,
