@@ -26,12 +26,17 @@ SynthDef(\fmx7, {
 	var gate = \gate.kr(1);
 	var freq = \freq.kr(440);
 	var dur = \dur.kr(1);
-	var env = EnvGen.ar(Env.adsr(\attackTime.kr(0.01), \decayTime.kr(0.3), \sustainLevel.kr(0.5), \releaseTime.kr(1)), gate, timeScale: dur, doneAction:2);
+    var legato = \legato.kr(1);
+    var attack = \attackTime.kr(0.01);
+    var decay = \decayTime.kr(0.3);
+    var sustain = \sustainLevel.kr(0.5);
+    var release = \releaseTime.kr(0.01);
+	var env = EnvGen.ar(Env.adsr(attack, decay, sustain, release), gate, timeScale: dur, doneAction:2);
     // operator levels are independent of their amplitudes. They can be at full level but
     // muted by the \amp parameter.
 	var levels = Array.fill(6, { |i| (\level++(i+1)).asSymbol.kr(1)});
     // on startup first operator's amp is 1, the rest are 0 -- otherwise we'd hear nothing
-	var amps = Array.fill(5, { |i| (\amp++(i+1)).asSymbol.kr(((0-i)>=0).asInteger)});
+	var amps = Array.fill(6, { |i| (\amp++(i+1)).asSymbol.kr(((0-i)>=0).asInteger)});
 	var ratios = Array.fill(6, { |i| (\ratio++(i+1)).asSymbol.kr(1)});
 	var detunes = Array.fill(6, { |i| (\detunes++(i+1)).asSymbol.kr(0)});
 	// !!! TODO: add modwheel and LFO
@@ -43,22 +48,28 @@ SynthDef(\fmx7, {
 	var lfodepth = \lfodepth.kr(0.0);
 	var lfo = SinOsc.ar(lfofreq, 0, lfodepth);
 
-	var envs = Array.fill(6, { |i|
-		EnvGen.kr(
-			Env.new(
-				[0]++Array.fill(3, { |n| (\eglevel++(i+1)++(n+1)).asSymbol.kr(1) * levels[i] })++[0],
-				[
-					1 / ((\egrate++(i+1)++1).asSymbol).kr(10),
-					1 / ((\egrate++(i+1)++2).asSymbol).kr(0.3),
-					1 / ((\egrate++(i+1)++3).asSymbol).kr(0.1),
-					1 / ((\egrate++(i+1)++4).asSymbol).kr(0.1),
-				].normalizeSum
-			),
-			gate: gate,
-			timeScale: dur,
-			doneAction:2
-		);
-	});
+    var envs = Array.fill(6, { |i|
+        var n = (i+1).asString;
+        EnvGen.kr(Env.new(
+            [
+                0, 
+                (\atkl++n).asSymbol.kr(1.0),
+                (\decl++n).asSymbol.kr(1.0),
+                (\susl++n).asSymbol.kr(1.0),
+                (\rerl++n).asSymbol.kr(0.0),
+            ], [
+                (\atkt++n).asSymbol.kr(0.01),
+                (\dect++n).asSymbol.kr(0.3),
+                (\sust++n).asSymbol.kr(0.1),
+                (\rert++n).asSymbol.kr(1.0),
+            ],
+            releaseNode: 3, 
+            loopNode: 1, 
+        ), 
+        gate:1, 
+        // timeScale: dur,
+    )
+    });
 
 	var ctls = Array.fill(6, { |i|[
 		freq * ratios[i] + detunes[i],
