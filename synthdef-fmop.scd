@@ -1,3 +1,6 @@
+// Single FM operator that can be modulated with other synths of this same class through
+// the 'mod' and 'modamt' parameters.
+// It has a 4-stage envelope.
 (
 SynthDef(\fmop, {
     var out = \out.kr(0);
@@ -18,7 +21,6 @@ SynthDef(\fmop, {
     var rell = \rell.kr(0);
     var gate = \gate.kr(1);
     var timescale = \dur.kr(1) * \legato.kr(1);
-    // var env = EnvGen.ar(Env.adsr(attack, decay, sustain, release), gate, timeScale: timescale, doneAction:2);
     var env = EnvGen.ar(Env.new(
         levels:[0,atkl,decl,susl,rell],
         times:[atkt,dect,sust,relt],
